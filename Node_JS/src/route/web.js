@@ -1,56 +1,42 @@
 import express from "express";
 import taskControllers from "../controllers/taskControllers";
+import path from "path";
+import cors from "cors";
+
 let router = express.Router();
 let initWebRoutes = (app) => {
-  // router.get("/", homeController.getHomePage);
-  // router.get("/crud", homeController.getCRUD);
-
-  // router.post("/post-crud", homeController.getPost);
-
-  // router.get("/get-crud", homeController.displayGetCRUD);
-
-  // router.get("/edit-crud", homeController.getEditCRUD);
-
-  // router.post("/put-crud", homeController.putCRUD);
-
-  // router.get("/delete-crud", homeController.deleteCRUD);
-
-  // router.post("/api/login", userController.handleLogin);
-
-  router.get("/api/get-all-done-task", taskControllers.handleGetAllDoneTask);
+  router.get("/get-all-done-task", taskControllers.handleGetAllDoneTask);
 
   router.delete(
-    "/api/remove-all-done-task",
+    "/remove-all-done-task",
     taskControllers.handleRemoveAllDoneTask
   );
-  router.post("/api/create-new-task", taskControllers.handleCreateNewTask);
+  router.post("/create-new-task", taskControllers.handleCreateNewTask);
 
-  router.delete("/api/delete-task/:taskId", taskControllers.handleDeleteTask);
+  router.delete("/delete-task/:taskId", taskControllers.handleDeleteTask);
 
-  router.get("/api/get-all-task", taskControllers.handleGetAllTask);
+  router.get("/get-all-task", taskControllers.handleGetAllTask);
 
-  router.get("/api/get-task-by-id", taskControllers.handleGetTaskById);
+  router.get("/get-task-by-id", taskControllers.handleGetTaskById);
 
-  router.put("/api/edit-task", taskControllers.handleEditTask);
+  router.put("/edit-task", taskControllers.handleEditTask);
 
-  router.put("/api/done-task", taskControllers.handleDoneTask);
-  router.put("/api/done-all-task", taskControllers.handleDoneAllTask);
-  router.post("/api/remove-all-task", taskControllers.handleRemoveAllTask);
+  router.put("/done-task", taskControllers.handleDoneTask);
+  router.put("/done-all-task", taskControllers.handleDoneAllTask);
+  router.post("/remove-all-task", taskControllers.handleRemoveAllTask);
 
-  // router.get("/api/top-doctor-home", doctorControllers.getTopDoctorHome);
+  app.use(cors());
 
-  // router.get("/api/get-all-doctors", doctorControllers.getAllDoctors);
+  app.use("/api", router);
 
-  // router.get(
-  //   "/api/get-detai-doctor-by-id",
-  //   doctorControllers.getDetailDoctorById
-  // );
+  app.use(express.static(path.resolve(__dirname, "../../../React_JS/build")));
 
-  // router.get(
-  //   "/api/get-content-markdown-doctor",
-  //   doctorControllers.getContentMarkdown
-  // );
+  app.get("*", function (req, res) {
+    res.sendFile(
+      path.resolve(__dirname, "../../../React_JS/build", "index.html")
+    );
+  });
 
-  return app.use("/", router);
+  return app;
 };
 module.exports = initWebRoutes;
