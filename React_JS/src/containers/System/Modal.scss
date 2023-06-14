@@ -1,0 +1,48 @@
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  line-height: 50px;
+  .modal-title {
+    width: 100%;
+    .input-title {
+      padding: 5px;
+      width: 100%;
+    }
+  }
+  .modal-description {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    .input-description {
+      height: 100px;
+    }
+  }
+  .modal-select {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    .date {
+      display: flex;
+      flex-direction: column;
+      width: 40%;
+      select {
+        padding: 5px;
+      }
+    }
+
+    .priority {
+      width: 40%;
+      display: flex;
+      flex-direction: column;
+      select {
+        padding: 7px;
+        margin-top: 6px;
+      }
+    }
+  }
+}
+.add-task {
+  width: 5em;
+}
