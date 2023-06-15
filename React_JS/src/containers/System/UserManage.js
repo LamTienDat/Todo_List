@@ -80,6 +80,7 @@ class UserManage extends Component {
       let res = await editTaskService(task);
       if (res && res.errCode === 0) {
         await this.getAllTask();
+        alert("edit sucess");
       } else {
         alert("Loii");
       }
