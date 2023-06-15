@@ -22,6 +22,7 @@ class UserManage extends Component {
       taskEdit: {},
       isSelected: false,
       selectedTasks: [],
+      isChecked: false,
     };
   }
 
@@ -133,6 +134,9 @@ class UserManage extends Component {
         isSelected: newSelectedTasks.length > 0,
       };
     });
+    // this.setState({
+    //   isChecked: true,
+    // });
   };
 
   handleDoneSelectedTasks = async () => {
@@ -140,12 +144,18 @@ class UserManage extends Component {
     let res = await removeAllDoneTaskServie(selectedTasks);
     alert(res);
     await this.getAllTask();
+    // this.setState({
+    //   isChecked: false,
+    // });
   };
   handleDeleteSelectedTasks = async () => {
     let { selectedTasks } = this.state;
     let res = await removeAllTaskServie(selectedTasks);
     alert(res);
     await this.getAllTask();
+    // this.setState({
+    //   isChecked: false,
+    // });
   };
   render() {
     let tasks = this.state.arrTasks;
@@ -184,6 +194,7 @@ class UserManage extends Component {
                     <input
                       type="checkbox"
                       className="check-box"
+                      // checked={this.state.isChecked}
                       onChange={() => this.handleSelectedTask(item)}
                     />
                     <div className="name" key={index}>
