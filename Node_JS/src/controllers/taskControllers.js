@@ -3,6 +3,24 @@ import CRUDService from "../services/CRUDService";
 import taskService from "../services/taskService";
 
 let handleCreateNewTask = async (req, res) => {
+  let info = req.body;
+  // taskName: data.taskName,
+  //       description: data.description,
+  //       priority: data.priority === "" ? "Normal" : data.priority,
+  //       taskStatus: data.taskStatus,
+  //       dueDate: !data.dueDate ? new Date() : data.dueDate,
+  if (
+    !info.taskName ||
+    !info.description ||
+    !info.priority ||
+    !info.taskStatus ||
+    !info.dueDate
+  ) {
+    return res.status(201).json({
+      errCode: -2,
+      message: "Fill all input ",
+    });
+  }
   let message = await taskService.createNewTask(req.body);
   return res.status(200).json(message);
 };

@@ -6,9 +6,9 @@ let createNewTask = (data) => {
       await db.Task.create({
         taskName: data.taskName,
         description: data.description,
-        priority: !data.priority === "" ? "Normal" : data.priority,
+        priority: data.priority === "" ? "Normal" : data.priority,
         taskStatus: data.taskStatus,
-        dueDate: data.dueDate,
+        dueDate: !data.dueDate ? new Date() : data.dueDate,
       });
       resolve({
         errCode: 0,
