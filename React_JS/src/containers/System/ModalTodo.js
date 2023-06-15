@@ -13,7 +13,7 @@ class ModalTodo extends Component {
       taskName: "",
       description: "",
       dueDate: "",
-      priority: "",
+      priority: "Normal",
       taskStatus: "no",
     };
   }
