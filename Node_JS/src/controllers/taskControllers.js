@@ -75,6 +75,18 @@ let handleGetTaskById = async (req, res) => {
 };
 let handleEditTask = async (req, res) => {
   try {
+    // if (
+    //   !info.taskName ||
+    //   !info.description ||
+    //   !info.priority ||
+    //   !info.taskStatus ||
+    //   !info.dueDate
+    // ) {
+    //   return res.status(201).json({
+    //     errCode: -2,
+    //     message: "Fill all input ",
+    //   });
+    // }
     let data = req.body;
     let message = await taskService.editTaskService(data);
     return res.status(200).json(message);
@@ -107,10 +119,12 @@ let handleRemoveAllDoneTask = async (req, res) => {
   return res.status(200).json(message);
 };
 let handleDoneAllTask = async (req, res) => {
-  let arrTask = req.body;
+  let arrTask = req.body[0];
   try {
     let result = await taskService.handleDoneAllTaskService(arrTask);
     if (result && result.errCode === 0) {
+      return res.status(200).json(result.message);
+    } else {
       return res.status(200).json(result.message);
     }
   } catch (e) {
@@ -122,10 +136,13 @@ let handleDoneAllTask = async (req, res) => {
   }
 };
 let handleRemoveAllTask = async (req, res) => {
-  let arrTask = req.body;
+  let arrTask = req.body[0];
+
   try {
     let result = await taskService.handleRemoveAllTaskService(arrTask);
     if (result && result.errCode === 0) {
+      return res.status(200).json(result.message);
+    } else {
       return res.status(200).json(result.message);
     }
   } catch (e) {

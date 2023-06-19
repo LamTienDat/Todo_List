@@ -206,18 +206,25 @@ let removeAllDoneTaskService = () => {
 let handleDoneAllTaskService = (arrTask) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let tasks = [];
-      for (let i = 0; i < arrTask.length; i++) {
-        let task = await db.Task.findOne({ where: { id: arrTask[i].id } });
-        tasks.push(task);
+      if (arrTask && arrTask.length > 0) {
+        let tasks = [];
+        for (let i = 0; i < arrTask.length; i++) {
+          let task = await db.Task.findOne({ where: { id: arrTask[i].id } });
+          tasks.push(task);
+        }
+        console.log(tasks);
+        let taskIds = tasks.map((task) => task.id);
+        await db.Task.update({ taskStatus: "yes" }, { where: { id: taskIds } });
+        resolve({
+          errCode: 0,
+          message: "done all",
+        });
+      } else {
+        resolve({
+          errCode: -4,
+          message: "No task selected",
+        });
       }
-      console.log(tasks);
-      let taskIds = tasks.map((task) => task.id);
-      await db.Task.update({ taskStatus: "yes" }, { where: { id: taskIds } });
-      resolve({
-        errCode: 0,
-        message: "done all",
-      });
     } catch (e) {
       reject(e);
     }
@@ -226,22 +233,29 @@ let handleDoneAllTaskService = (arrTask) => {
 let handleRemoveAllTaskService = (arrTask) => {
   return new Promise(async (resolve, reject) => {
     try {
-      let tasks = [];
-      for (let i = 0; i < arrTask.length; i++) {
-        let task = await db.Task.findOne({
-          where: { id: arrTask[i].id },
-          raw: true,
+      if (arrTask && arrTask.length > 0) {
+        let tasks = [];
+        for (let i = 0; i < arrTask.length; i++) {
+          let task = await db.Task.findOne({
+            where: { id: arrTask[i].id },
+            raw: true,
+          });
+          tasks.push(task);
+        }
+        console.log(tasks);
+        let taskIds = tasks.map((task) => task.id);
+        console.log(taskIds);
+        await db.Task.destroy({ where: { id: taskIds } });
+        resolve({
+          errCode: 0,
+          message: "remove all",
         });
-        tasks.push(task);
+      } else {
+        resolve({
+          errCode: -4,
+          message: "no task selected",
+        });
       }
-      console.log(tasks);
-      let taskIds = tasks.map((task) => task.id);
-      console.log(taskIds);
-      await db.Task.destroy({ where: { id: taskIds } });
-      resolve({
-        errCode: 0,
-        message: "remove all",
-      });
     } catch (e) {
       reject(e);
     }

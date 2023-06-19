@@ -42,6 +42,9 @@ tr:nth-child(even) {
       margin: 10px;
       box-shadow: 2px;
       justify-content: space-between;
+      &.active {
+        background-color: #25ff5b;
+      }
       .left-content {
         display: flex;
         align-items: center;

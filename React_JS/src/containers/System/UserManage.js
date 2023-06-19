@@ -23,6 +23,7 @@ class UserManage extends Component {
       isSelected: false,
       selectedTasks: [],
       isChecked: false,
+      isShowPopUp: false,
     };
   }
 
@@ -36,14 +37,30 @@ class UserManage extends Component {
     });
   };
 
+  // getAllTask = async () => {
+  //   let res = await getAlltaskService();
+  //   if (res && res.errorCode === 0) {
+  //     this.setState({
+  //       arrTasks: res.data,
+  //     });
+  //   }
+  //   this.setState({ isSelected: false });
+  // };
+
   getAllTask = async () => {
     let res = await getAlltaskService();
     if (res && res.errorCode === 0) {
+      let data = res.data;
+      if (data && data.length > 0) {
+        data = data.map((item) => ({
+          ...item,
+          isSelected: false,
+        }));
+      }
       this.setState({
-        arrTasks: res.data,
+        arrTasks: data,
       });
     }
-    this.setState({ isSelected: false });
   };
 
   toggle = () => {
@@ -112,56 +129,78 @@ class UserManage extends Component {
     }
   };
   handleSelectedTask = (task) => {
-    this.setState((prevState) => {
-      const { selectedTasks } = prevState;
-      const isSelected = selectedTasks.some(
-        (selectedTask) => selectedTask.id === task.id
-      );
-      let newSelectedTasks;
+    // this.setState((prevState) => {
+    //   const { selectedTasks } = prevState;
+    //   const isSelected = selectedTasks.some(
+    //     (selectedTask) => selectedTask.id === task.id
+    //   );
+    //   let newSelectedTasks;
 
-      if (isSelected) {
-        // Nếu task đã được chọn, hãy loại bỏ nó khỏi danh sách các task đã chọn
-        newSelectedTasks = selectedTasks.filter(
-          (selectedTask) => selectedTask.id !== task.id
-        );
-      } else {
-        // Nếu task chưa được chọn, hãy thêm nó vào danh sách các task đã chọn
-        newSelectedTasks = [...selectedTasks, task];
-      }
+    //   if (isSelected) {
+    //     // Nếu task đã được chọn, hãy loại bỏ nó khỏi danh sách các task đã chọn
+    //     newSelectedTasks = selectedTasks.filter(
+    //       (selectedTask) => selectedTask.id !== task.id
+    //     );
+    //   } else {
+    //     // Nếu task chưa được chọn, hãy thêm nó vào danh sách các task đã chọn
+    //     newSelectedTasks = [...selectedTasks, task];
+    //   }
 
-      return {
-        selectedTasks: newSelectedTasks,
-        isSelected: newSelectedTasks.length > 0,
-      };
-    });
-    // this.setState({
-    //   isChecked: true,
+    //   return {
+    //     selectedTasks: newSelectedTasks,
+    //     isSelected: newSelectedTasks.length > 0,
+    //   };
     // });
+    let { arrTasks } = this.state;
+    if (arrTasks && arrTasks.length > 0) {
+      arrTasks = arrTasks.map((item) => {
+        if (item.id === task.id) item.isSelected = !item.isSelected;
+        return item;
+      });
+      this.setState({
+        arrTasks: arrTasks,
+      });
+    }
+    let rs = [];
+    if (arrTasks && arrTasks.length > 0) {
+      let selectedTask = arrTasks.filter((item) => item.isSelected === true);
+      rs.push(selectedTask);
+    }
+    if (rs.length > 0) {
+      this.setState({
+        isShowPopUp: true,
+        selectedTasks: rs,
+      });
+    } else {
+      this.setState({
+        isShowPopUp: false,
+      });
+    }
   };
 
   handleDoneSelectedTasks = async () => {
     let { selectedTasks } = this.state;
-    let res = await removeAllDoneTaskServie(selectedTasks);
-    alert(res);
-    await this.getAllTask();
-    // this.setState({
-    //   isChecked: false,
-    // });
+    if (selectedTasks && selectedTasks.length > 0) {
+      let res = await removeAllDoneTaskServie(selectedTasks);
+      alert(res);
+      await this.getAllTask();
+    } else {
+      alert("No selected task");
+    }
   };
   handleDeleteSelectedTasks = async () => {
     let { selectedTasks } = this.state;
-    let res = await removeAllTaskServie(selectedTasks);
-    alert(res);
-    await this.getAllTask();
-    // this.setState({
-    //   isChecked: false,
-    // });
+    if (selectedTasks && selectedTasks.length > 0) {
+      let res = await removeAllTaskServie(selectedTasks);
+      alert(res);
+      await this.getAllTask();
+    } else {
+      alert("No selected task");
+    }
   };
   render() {
     let tasks = this.state.arrTasks;
-
-    // console.log("check tasks", this.state.selectedTasks);
-    // console.log("check selected", this.state.selectedTasks);
+    console.log("check get all data: ", this.state.selectedTasks);
 
     return (
       <>
@@ -189,14 +228,11 @@ class UserManage extends Component {
           <div className="content-container">
             {tasks.map((item, index) => {
               return (
-                <div className="task">
+                <div
+                  className={item.isSelected === true ? "task active" : "task"}
+                  onClick={() => this.handleSelectedTask(item)}
+                >
                   <div className="left-content">
-                    <input
-                      type="checkbox"
-                      className="check-box"
-                      // checked={this.state.isChecked}
-                      onChange={() => this.handleSelectedTask(item)}
-                    />
                     <div className="name" key={index}>
                       {item.taskName}
                     </div>
@@ -219,7 +255,7 @@ class UserManage extends Component {
               );
             })}
           </div>
-          {this.state.isSelected && (
+          {this.state.isShowPopUp === true && (
             <div className="pop-up">
               <button
                 className="done-all"

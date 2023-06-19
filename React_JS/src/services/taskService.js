@@ -22,6 +22,7 @@ const removeAllDoneTask = () => {
   return axios.delete("/api/remove-all-done-task");
 };
 const removeAllDoneTaskServie = (data) => {
+  console.log("check data payload: ", data);
   return axios.put("/api/done-all-task", data);
 };
 const removeAllTaskServie = (data) => {
